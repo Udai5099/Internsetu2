@@ -1,0 +1,130 @@
+[
+  {
+    "required_skills": [
+      "Python",
+      "Java",
+      "JavaScript",
+      "SQL",
+      "AWS",
+      "Azure",
+      "GCP",
+      "Docker"
+    ],
+    "experience_years": 1.0,
+    "keywords": [
+      "job",
+      "title",
+      "junior",
+      "full-stack",
+      "developer",
+      "company",
+      "techinnovate",
+      "solutions",
+      "description",
+      "seeking",
+      "motivated",
+      "join",
+      "dynamic",
+      "team",
+      "responsible",
+      "assisting",
+      "development",
+      "maintenance",
+      "both",
+      "front-end",
+      "back-end",
+      "components",
+      "web",
+      "applications",
+      "key"
+    ],
+    "raw_text": "Job Title: Junior Full-Stack Developer Company: TechInnovate Solutions Job Description: We are seeking a motivated Junior Full-Stack Developer to join our dynamic team. You will be responsible for assisting in the development and maintenance of both front-end and back-end components of our web applications. Key Responsibilities: Develop and maintain web applications using React.js and Node.js. Write clean, scalable code using Python and Java. Implement and manage databases using SQL and MongoDB. Collaborate with cross-functional teams to define, design, and ship new features. Participate in code reviews and team meetings. Required Skills and Qualifications: Bachelor's degree in Computer Science or related field. 1+ years of experience in software development. Proficiency in JavaScript, including DOM manipulation and the JavaScript object model. Experience with React.js and its core principles. Familiarity with RESTful APIs and modern authorization mechanisms. Knowledge of modern front-end build pipelines and tools. Experience with common back-end technologies such as Node.js, Python, or Java. Familiarity with database technology such as SQL, MongoDB, or PostgreSQL. Understanding of code versioning tools, such as Git. Preferred Skills: Experience with Docker containerization. Knowledge of cloud services (AWS, Azure, or GCP). Understanding of Agile methodologies. What We Offer: Competitive salary and benefits package. Flexible working hours and remote work options. Opportunities for professional growth and development.",
+    "title": "DOCKER"
+  },
+  {
+    "required_skills": [],
+    "experience_years": null,
+    "keywords": [
+      "looking",
+      "web",
+      "developers"
+    ],
+    "raw_text": "Looking for Web Developers",
+    "title": "Java"
+  },
+  {
+    "required_skills": [],
+    "experience_years": null,
+    "keywords": [
+      "looking",
+      "web",
+      "developers"
+    ],
+    "raw_text": "Looking for Web Developers",
+    "title": "web"
+  },
+  {
+    "required_skills": [
+      "Java",
+      "JavaScript"
+    ],
+    "experience_years": null,
+    "keywords": [
+      "javascript",
+      "java",
+      "react"
+    ],
+    "raw_text": "JAVASCRIPT, JAVA, REACT",
+    "title": "JAVASCRIPT"
+  },
+  {
+    "required_skills": [
+      "JavaScript"
+    ],
+    "experience_years": null,
+    "keywords": [
+      "seeking",
+      "skilled",
+      "javascript",
+      "developer",
+      "join",
+      "dynamic",
+      "development",
+      "team",
+      "ideal",
+      "candidate",
+      "have",
+      "strong",
+      "expertise",
+      "modern",
+      "frameworks",
+      "such",
+      "react",
+      "node",
+      "vue",
+      "responsible",
+      "developing",
+      "testing",
+      "maintaining",
+      "high-quality",
+      "web"
+    ],
+    "raw_text": "We are seeking a skilled JavaScript Developer to join our dynamic development team. The ideal candidate will have strong expertise in JavaScript, with experience in modern frameworks such as React, Node.js, or Vue.js. You will be responsible for developing, testing, and maintaining high-quality web applications, ensuring optimal performance, responsiveness, and scalability. Collaborating closely with designers, backend developers, and product teams, you will implement interactive UI components, integrate APIs, and optimize application workflows. A deep understanding of ES6+, asynchronous programming, and front-end architecture is essential. Strong problem-solving skills, attention to detail, and the ability to work in an agile environment are required. Experience with Git, RESTful APIs, and version control is preferred.",
+    "title": "JAVASCRIPT"
+  },
+  {
+    "required_skills": [
+      "Java",
+      "JavaScript"
+    ],
+    "experience_years": null,
+    "keywords": [
+      "java",
+      "javascript",
+      "css",
+      "react"
+    ],
+    "raw_text": "java javascript css react",
+    "title": "Java"
+  }
+]
