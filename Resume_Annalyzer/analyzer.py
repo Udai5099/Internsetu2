@@ -4,6 +4,7 @@ from streamlit.runtime.uploaded_file_manager import UploadedFile
 import streamlit as st
 import google.generativeai as genai
 import json
+import os    # <-- ADDED (for environment variables)
 
 # This assumes you have a pdf_parser.py file
 from pdf_parser import extract_text_from_file, TextExtractionError
@@ -39,14 +40,10 @@ def _parse_years_of_experience(text: str) -> Optional[float]:
                 candidates.append(max(nums))
     return max(candidates) if candidates else 0.0
 
-# ADDED BACK: Function to detect quantifiable achievements for ATS score
 def _detect_quantifiable_achievements(text: str) -> int:
     count = 0
-    # Percentages like 20%
     count += len(re.findall(r"\b\d+\s*%", text))
-    # Monetary gains/savings like $1M, $200k
     count += len(re.findall(r"\$\s?\d+[\d,]*(?:k|m|b)?", text, flags=re.IGNORECASE))
-    # Action verbs followed by numbers: increased 20, reduced 15, improved 30
     count += len(re.findall(r"\b(increased|reduced|improved|boosted|saved|grew|decreased)\b[^\n%$]{0,40}\b\d+\b", text, flags=re.IGNORECASE))
     return count
 
@@ -57,24 +54,19 @@ def analyze_resume(resume_text: str) -> Dict[str, Any]:
         "skills_found": _find_skills(lowercase_text),
         "experience_level": _parse_years_of_experience(lowercase_text),
         "_word_count": len(normalized.split()),
-        # ADDED BACK: Quantifiable achievements data
         "_quant_achievements": _detect_quantifiable_achievements(lowercase_text)
     }
 
-# ADDED BACK: Function to generate the ATS score
 def generate_ats_score(analysis_dict: Dict[str, Any]) -> int:
     total_points = 0.0
-    
-    # Skills coverage: up to 55 points
+
     skills_found = analysis_dict.get("skills_found", [])
     skill_ratio = len(skills_found) / len(PREDEFINED_SKILLS)
     total_points += 55.0 * skill_ratio
 
-    # Quantifiable achievements: up to 20 points
     quant_count = analysis_dict.get("_quant_achievements", 0)
     total_points += min(quant_count, 4) * 5.0
 
-    # Length: ideal between 300 and 800 words -> up to 20 points
     word_count = analysis_dict.get("_word_count", 0)
     if 300 <= word_count <= 800:
         total_points += 20.0
@@ -83,7 +75,6 @@ def generate_ats_score(analysis_dict: Dict[str, Any]) -> int:
         penalty = min(20.0, distance * 0.05)
         total_points += max(0.0, 20.0 - penalty)
 
-    # Experience present: +5 points if detected
     if analysis_dict.get("experience_level", 0.0) >= 1.0:
         total_points += 5.0
 
@@ -91,11 +82,13 @@ def generate_ats_score(analysis_dict: Dict[str, Any]) -> int:
 
 def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
     try:
-        api_key = st.secrets.get("GEMINI_API_KEY")
+        # NEW: Load GEMINI_API_KEY from system environment variables (Render)
+        api_key = os.getenv("GEMINI_API_KEY")  # <-- UPDATED
+
         if not api_key:
-            st.error("GEMINI_API_KEY not found in Streamlit secrets.")
+            st.error("GEMINI_API_KEY not found. Please set it in Render Environment Variables.")
             return {}
-        
+
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel("gemini-1.5-flash")
 
@@ -115,35 +108,30 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
         """
 
         response = model.generate_content(prompt)
-
-        # Extract text safely
         raw_text = response.text or "{}"
-
-        # Try to convert JSON
         return json.loads(raw_text)
 
     except Exception as e:
         st.error(f"Error calling Gemini API: {e}")
         return {}
 
-
 def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
     result = {'success': False, 'error_message': None}
     try:
         resume_text = extract_text_from_file(uploaded_file)
         basic_analysis = analyze_resume(resume_text)
-        # ADDED BACK: ATS score calculation is now part of the pipeline
         ats_score = generate_ats_score(basic_analysis)
         ai_recommendations = generate_gemini_recommendations(resume_text)
-        
+
         result.update({
             'success': True,
             'resume_text': resume_text,
             'basic_analysis': basic_analysis,
-            'ats_score': ats_score, # Pass the score to the UI
+            'ats_score': ats_score,
             'ai_recommendations': ai_recommendations,
             'ai_available': bool(ai_recommendations)
         })
-    except (TextExtractionError, Exception) as e:
+    except (TextExtractionError, Exception as e):
         result['error_message'] = str(e)
+
     return result
