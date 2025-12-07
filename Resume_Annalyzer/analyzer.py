@@ -94,7 +94,7 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
             return {}
 
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        model = genai.GenerativeModel("gemini-1.5-flash-001")
 
         prompt = f"""
         Act as an expert career coach.
@@ -141,4 +141,5 @@ def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
         result["error_message"] = str(e)
 
     return result
+
 
