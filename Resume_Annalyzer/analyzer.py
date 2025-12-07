@@ -4,9 +4,9 @@ from streamlit.runtime.uploaded_file_manager import UploadedFile
 import streamlit as st
 import google.generativeai as genai
 import json
-import os    # <-- ADDED (for environment variables)
+import os    # For environment variables
 
-# This assumes you have a pdf_parser.py file
+# PDF parser import
 from pdf_parser import extract_text_from_file, TextExtractionError
 
 PREDEFINED_SKILLS: List[str] = [
@@ -24,7 +24,7 @@ def _find_skills(text: str) -> List[str]:
         pattern = r"(?i)\b" + re.escape(skill) + r"\b"
         if re.search(pattern, text):
             found_skills.add(skill)
-    return sorted(list(found_skills))
+    return sorted(found_skills)
 
 def _parse_years_of_experience(text: str) -> Optional[float]:
     candidates: List[float] = []
@@ -44,7 +44,11 @@ def _detect_quantifiable_achievements(text: str) -> int:
     count = 0
     count += len(re.findall(r"\b\d+\s*%", text))
     count += len(re.findall(r"\$\s?\d+[\d,]*(?:k|m|b)?", text, flags=re.IGNORECASE))
-    count += len(re.findall(r"\b(increased|reduced|improved|boosted|saved|grew|decreased)\b[^\n%$]{0,40}\b\d+\b", text, flags=re.IGNORECASE))
+    count += len(re.findall(
+        r"\b(increased|reduced|improved|boosted|saved|grew|decreased)\b[^\n%$]{0,40}\b\d+\b",
+        text,
+        flags=re.IGNORECASE
+    ))
     return count
 
 def analyze_resume(resume_text: str) -> Dict[str, Any]:
@@ -82,11 +86,11 @@ def generate_ats_score(analysis_dict: Dict[str, Any]) -> int:
 
 def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
     try:
-        # NEW: Load GEMINI_API_KEY from system environment variables (Render)
-        api_key = os.getenv("GEMINI_API_KEY")  # <-- UPDATED
+        # Load from environment variables (Render compatible)
+        api_key = os.getenv("GEMINI_API_KEY")
 
         if not api_key:
-            st.error("GEMINI_API_KEY not found. Please set it in Render Environment Variables.")
+            st.error("GEMINI_API_KEY not found. Set it in Render Environment Variables.")
             return {}
 
         genai.configure(api_key=api_key)
@@ -116,7 +120,7 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
         return {}
 
 def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
-    result = {'success': False, 'error_message': None}
+    result = {"success": False, "error_message": None}
     try:
         resume_text = extract_text_from_file(uploaded_file)
         basic_analysis = analyze_resume(resume_text)
@@ -124,14 +128,17 @@ def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
         ai_recommendations = generate_gemini_recommendations(resume_text)
 
         result.update({
-            'success': True,
-            'resume_text': resume_text,
-            'basic_analysis': basic_analysis,
-            'ats_score': ats_score,
-            'ai_recommendations': ai_recommendations,
-            'ai_available': bool(ai_recommendations)
+            "success": True,
+            "resume_text": resume_text,
+            "basic_analysis": basic_analysis,
+            "ats_score": ats_score,
+            "ai_recommendations": ai_recommendations,
+            "ai_available": bool(ai_recommendations)
         })
-    except (TextExtractionError, Exception as e):
-        result['error_message'] = str(e)
+
+    # ✅ FIXED Syntax: correct way to catch multiple exceptions
+    except (TextExtractionError, Exception) as e:
+        result["error_message"] = str(e)
 
     return result
+
