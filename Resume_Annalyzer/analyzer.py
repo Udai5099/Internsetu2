@@ -97,7 +97,7 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
         genai.configure(api_key=api_key)
 
         # ✔ THIS MODEL WORKS IN FREE TIER AND DOES NOT 404
-        model = genai.GenerativeModel("gemini-1.5-flash")  
+        model = genai.GenerativeModel("gemini-pro")  
 
         # NEW API CALL FORMAT (2025)
         response = model.generate_content(
@@ -150,3 +150,4 @@ def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
         result["error_message"] = str(e)
 
     return result
+
