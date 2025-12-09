@@ -2,7 +2,7 @@ from typing import Dict, Any, List, Optional
 import re
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 import streamlit as st
-import google.genai as genai
+import google.generativeai as genai
 import json
 import os
 from pdf_parser import extract_text_from_file, TextExtractionError
@@ -146,3 +146,4 @@ def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
         result["error_message"] = str(e)
 
     return result
+
