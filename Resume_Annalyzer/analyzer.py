@@ -94,8 +94,7 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
             st.error("❌ GEMINI_API_KEY missing in environment variables.")
             return {}
         client = genai.Client(
-            api_key=api_key,
-            api_endpoint="https://generativelanguage.googleapis.com"
+            api_key=api_key
         )
 
         response = client.models.generate_content(
@@ -148,6 +147,7 @@ def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
         result["error_message"] = str(e)
 
     return result
+
 
 
 
