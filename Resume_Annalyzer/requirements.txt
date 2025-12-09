@@ -9,5 +9,5 @@ plotly==6.1.2
 sentence-transformers==2.4.0
 huggingface_hub==0.24.6
 google-genai>=0.2.0
-google-generativeai>=0.11
+
 
