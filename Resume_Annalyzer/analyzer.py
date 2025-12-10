@@ -108,7 +108,7 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
         """
 
         # Correct API call
-        response = client.models.generate(
+        response = client.models.text.generate(
             model="gemini-1.0-pro",   # Free-tier safe model
             input=prompt
         )
@@ -150,3 +150,4 @@ def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
         result["error_message"] = str(e)
 
     return result
+
