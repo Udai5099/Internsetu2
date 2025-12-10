@@ -82,13 +82,53 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
 
         client = genai.Client(api_key=api_key)
 
+        # 1️⃣ Pick a supported model automatically
+        #    Prefer 2.0 models, then 1.5, then anything that supports generateContent.
+        preferred_order = [
+            "gemini-2.0-flash",
+            "gemini-2.0-pro",
+            "gemini-1.5-pro",
+            "gemini-1.5-flash",
+        ]
+
+        # Build a list of models that support generateContent
+        available_models = []
+        for m in client.models.list():
+            if hasattr(m, "supported_actions"):
+                actions = m.supported_actions
+            elif hasattr(m, "supportedGenerationMethods"):
+                # older field name in some responses
+                actions = m.supportedGenerationMethods
+            else:
+                actions = []
+
+            if "generateContent" in actions:
+                available_models.append(m.name)
+
+        if not available_models:
+            st.error("⚠ No models supporting generateContent are available for this API key.")
+            return {}
+
+        # Choose best model from preferred_order that is actually available
+        selected_model = None
+        for preferred in preferred_order:
+            if preferred in available_models:
+                selected_model = preferred
+                break
+
+        # Fallback: just take the first available
+        if selected_model is None:
+            selected_model = available_models[0]
+
+        # 2️⃣ Build the prompt
         prompt = f"""
-        Act as a career expert. Analyze this resume and return ONLY valid JSON:
+        Act as a career expert. Analyze this resume and return ONLY valid JSON.
 
         Resume:
         {resume_text}
 
-        JSON format:
+        Return JSON ONLY in this format (no extra text, no markdown):
+
         {{
             "summaryParagraph": "string",
             "jobRecommendations": ["string", "string", "string"],
@@ -96,19 +136,18 @@ def generate_gemini_recommendations(resume_text: str) -> Dict[str, Any]:
         }}
         """
 
-        # ******** Correct Gemini API call ********
+        # 3️⃣ Call Gemini with the selected model
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
-            contents=prompt
+            model=selected_model,
+            contents=prompt,
         )
-
-        # ******** Correct output field ********
         output = response.text
 
+        # 5️⃣ Parse JSON
         return json.loads(output)
 
     except json.JSONDecodeError:
-        st.error("⚠ Gemini returned invalid JSON.")
+        st.error("⚠ Gemini returned invalid JSON. Try again or simplify the resume text.")
         return {}
 
     except Exception as e:
@@ -135,6 +174,7 @@ def full_analysis_pipeline(uploaded_file: UploadedFile) -> Dict[str, Any]:
 
     except Exception as e:
         return {"success": False, "error_message": str(e)}
+
 
 
 
