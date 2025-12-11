@@ -89,10 +89,9 @@ window.addEventListener("load", function() {{
 </script>
 """, unsafe_allow_html=True)
 
-params = st.experimental_get_query_params()
-if "toggleTheme" in params:
+if "toggleTheme" in st.query_params:
     toggle_theme()
-    st.experimental_set_query_params()
+    st.query_params.clear() 
     st.rerun()
 def _render_score_gauge(score: int):
     color = "#28a745" if score >= 75 else "#ffc107" if score >= 50 else "#dc3545"
@@ -182,3 +181,4 @@ def page_resume_analyzer():
 
 if __name__ == "__main__":
     page_resume_analyzer()
+
