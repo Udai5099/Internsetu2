@@ -121,7 +121,7 @@ def page_resume_analyzer():
     # THEME TOGGLE (Top Right)
     col_t1, col_t2 = st.columns([6, 1])
     with col_t2:
-        if st.button("🌙 / ☀️ Toggle Theme"):
+        if st.button("🌙 / ☀️"):
             toggle_theme()
             st.rerun()
 
@@ -151,3 +151,4 @@ def page_resume_analyzer():
 
 if __name__ == "__main__":
     page_resume_analyzer()
+
